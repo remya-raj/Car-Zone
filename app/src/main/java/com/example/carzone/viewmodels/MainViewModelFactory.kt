@@ -6,7 +6,7 @@ import com.example.carzone.repository.CarRepository
 
 class MainViewModelFactory(private val carRepository: CarRepository): ViewModelProvider.Factory {
 
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return MainViewModel(carRepository) as T
     }
 
