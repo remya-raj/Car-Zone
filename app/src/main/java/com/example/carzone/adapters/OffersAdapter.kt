@@ -44,7 +44,6 @@ class OffersAdapter(private val mList: List<Banner?>?) : RecyclerView.Adapter<Of
         builder.setTitle(title)
         builder.setMessage(message)
         builder.setNeutralButton("Close"){dialogInterface , which ->
-            Toast.makeText(context,"Alert Closed",Toast.LENGTH_SHORT).show()
         }
         val alertDialog: AlertDialog = builder.create()
         alertDialog.show()

@@ -2,6 +2,8 @@ package com.example.carzone.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -24,33 +26,47 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        initData()
+        initView()
+    }
 
+    private fun initView() {
+        mainViewModel.carsData.observe(this, Observer {
+
+            binding.viewBgProgressBar.visibility = View.GONE
+            binding.progressBar.visibility = View.GONE
+
+            it?.let {
+                if (it.status == "success") {
+                    binding.tvName.text = it.feeds[0].car_name
+                    binding.tvNumber.text = it.feeds[0].car_reg_no
+                    binding.tvType.text = it.feeds[0].car_type + " - " + it.feeds[0].fuel_type
+                    Glide
+                        .with(this)
+                        .load(it.feeds[0].image_url)
+                        .centerCrop()
+                        .into(binding.ivCar)
+
+                    val carServiceLayoutManager = GridLayoutManager(this, 4)
+                    val carServiceAdapter = CarServicesAdapter(it.feeds[1].services)
+                    binding.rvCarServices.layoutManager = carServiceLayoutManager
+                    binding.rvCarServices.adapter = carServiceAdapter
+
+                    val offerLayoutAdapter = LinearLayoutManager(this)
+                    val offersAdapter = OffersAdapter(it.feeds[2].banners)
+
+                    binding.rvOffers.layoutManager = offerLayoutAdapter
+                    binding.rvOffers.adapter = offersAdapter
+                } else {
+                    Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+    }
+
+    private fun initData() {
         val carService = RetrofitHelper().getInstance().create(CarService::class.java)
         val carRepository = CarRepository(carService)
         mainViewModel = ViewModelProvider(this, MainViewModelFactory(carRepository)).get(MainViewModel::class.java)
-
-        mainViewModel.carsData.observe(this, Observer {
-            it?.let {
-                binding.tvName.text = it.feeds[0].car_name
-                binding.tvNumber.text = it.feeds[0].car_reg_no
-                binding.tvType.text = it.feeds[0].car_type + " - " + it.feeds[0].fuel_type
-                Glide
-                    .with(this)
-                    .load(it.feeds[0].image_url)
-                    .centerCrop()
-                    .into(binding.ivCar)
-
-                val carServiceLayoutManager = GridLayoutManager(this, 4)
-                val carServiceAdapter = CarServicesAdapter(it.feeds[1].services)
-                binding.rvCarServices.layoutManager = carServiceLayoutManager
-                binding.rvCarServices.adapter = carServiceAdapter
-
-                val offerLayoutAdapter = LinearLayoutManager(this)
-                val offersAdapter = OffersAdapter(it.feeds[2].banners)
-
-                binding.rvOffers.layoutManager = offerLayoutAdapter
-                binding.rvOffers.adapter = offersAdapter
-            }
-        })
     }
 }
