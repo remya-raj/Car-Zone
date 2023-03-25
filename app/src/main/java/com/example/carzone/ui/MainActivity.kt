@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.carzone.adapters.CarServicesAdapter
+import com.example.carzone.adapters.MainAdapter
 import com.example.carzone.adapters.OffersAdapter
 import com.example.carzone.api.CarService
 import com.example.carzone.api.RetrofitHelper
@@ -38,25 +39,12 @@ class MainActivity : AppCompatActivity() {
 
             it?.let {
                 if (it.status == "success") {
-                    binding.tvName.text = it.feeds[0].car_name
-                    binding.tvNumber.text = it.feeds[0].car_reg_no
-                    binding.tvType.text = it.feeds[0].car_type + " - " + it.feeds[0].fuel_type
-                    Glide
-                        .with(this)
-                        .load(it.feeds[0].image_url)
-                        .centerCrop()
-                        .into(binding.ivCar)
-
-                    val carServiceLayoutManager = GridLayoutManager(this, 4)
-                    val carServiceAdapter = CarServicesAdapter(it.feeds[1].services)
-                    binding.rvCarServices.layoutManager = carServiceLayoutManager
-                    binding.rvCarServices.adapter = carServiceAdapter
 
                     val offerLayoutAdapter = LinearLayoutManager(this)
-                    val offersAdapter = OffersAdapter(it.feeds[2].banners)
+                    val offersAdapter = MainAdapter(this, it.feeds)
+                    binding.rvMain.layoutManager = offerLayoutAdapter
+                    binding.rvMain.adapter = offersAdapter
 
-                    binding.rvOffers.layoutManager = offerLayoutAdapter
-                    binding.rvOffers.adapter = offersAdapter
                 } else {
                     Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show()
                 }
