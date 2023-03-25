@@ -21,7 +21,8 @@ class CarServicesAdapter(private val mList: List<Service?>?) : RecyclerView.Adap
         with(holder){
             mList?.get(position)?.let {
                 val redirectionUrl = it.redirect_url
-                tvServiceName.text = it.name
+                val title = it.name
+                tvServiceName.text = title
                 Glide
                     .with(itemView)
                     .load(it.image_url)
@@ -29,7 +30,7 @@ class CarServicesAdapter(private val mList: List<Service?>?) : RecyclerView.Adap
                     .into(ivService)
 
                 ivService.setOnClickListener {
-                    val intent = WebViewActivity.getIntent(itemView.context, redirectionUrl)
+                    val intent = WebViewActivity.getIntent(itemView.context, redirectionUrl, title)
                     itemView.context.startActivity(intent)
                 }
             }
