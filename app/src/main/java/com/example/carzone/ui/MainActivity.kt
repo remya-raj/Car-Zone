@@ -1,4 +1,4 @@
-package com.example.carzone
+package com.example.carzone.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
